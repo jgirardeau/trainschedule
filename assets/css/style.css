@@ -1,0 +1,15 @@
+* {
+    box-sizing: border-box;
+}
+
+#jumbo {
+    background-color: lightskyblue;
+}
+
+
+/* body {
+    background-image: url("../images/background.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+} */
