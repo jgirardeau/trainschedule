@@ -50,20 +50,96 @@ function addTableEntry(table) {
     $("#tableBody").append(tr);
 }
 
+function validText(name, htmlRef) {
+    var validText = false;
+    if (name) {
+        htmlRef.removeClass("errorShow").addClass("errorHide");
+        validText = true;
+    } else {
+        htmlRef.removeClass("errorHide").addClass("errorShow");
+    }
+    return validText;
+}
+
+function validIntegerPositive(name, htmlRef) {
+    var validIntegerPositive = false;
+    console.log("Check Integer " + name);
+    var intVal = parseInt(name);
+    if (Number.isInteger(intVal) && intVal > 0) {
+        htmlRef.removeClass("errorShow").addClass("errorHide");
+        validIntegerPositive = true;
+    } else {
+        errorFound = true;
+        htmlRef.removeClass("errorHide").addClass("errorShow");
+    }
+    return validIntegerPositive;
+}
+
+function validMilitaryTime(name, htmlRef) {
+    var validMilitaryTime = true;
+    console.log("Check military " + name);
+    var array = name.split(':');
+    console.log("Array ", array.length, " ", array, " ", array[0]);
+    if (array.length != 2) {
+        validMilitaryTime = false;
+        console.log("array length fails");
+    }
+    var intVal = parseInt(array[0]);
+    if (Number.isInteger(intVal) && intVal >= 0 && intVal < 24) {
+
+    } else {
+        validMilitaryTime = false;
+        console.log("hours fail");
+    }
+    intVal = parseInt(array[1]);
+    if (Number.isInteger(intVal) && intVal >= 0 && intVal < 60) {
+
+    } else {
+        validMilitaryTime = false;
+        console.log("min fail");
+    }
+
+    if (!validMilitaryTime) {
+        console.log("HIDE MILITARY");
+        htmlRef.removeClass("errorShow").addClass("errorHide");
+    } else {
+        console.log("SHOW MILITARY");
+        htmlRef.removeClass("errorHide").addClass("errorShow");
+    }
+
+    return validMilitaryTime;
+}
+
 $("#submitButton").click(function() {
     event.preventDefault();
+    var errorInForm = false;
     var trainName = $("#trainName").val();
+    if (!validText(trainName, $("#trainNameError"))) errorInForm = true;
     var destination = $("#destination").val();
+    if (!validText(destination, $("#destinationError"))) errorInForm = true;
     var frequencyMinutes = $("#frequencyMinutes").val();
+    if (!validText(frequencyMinutes, $("#frequencyMinutesError"))) errorInForm = true;
+    if (!errorInForm) {
+        if (!validIntegerPositive(frequencyMinutes, $("#frequencyMinutesIntegerError"))) errorInForm = true;
+    }
     var firstArrival = $("#firstArrival").val();
+    if (!validText(firstArrival, $("#firstArrivalError"))) errorInForm = true;
+    if (!errorInForm) {
+        if (!validMilitaryTime(firstArrival, $("#firstArrivalMilitaryTimeError"))) {
+            console.log("military time error");
+            errorInForm = true;
+        }
+    }
     var dateAdded = firebase.database.ServerValue.TIMESTAMP;
-    database.ref().push({
-        trainName: trainName,
-        destination: destination,
-        firstArrival: firstArrival,
-        frequencyMinutes: frequencyMinutes,
-        dateAdded: dateAdded
-    });
+    if (!errorInForm) {
+        database.ref().push({
+            trainName: trainName,
+            destination: destination,
+            firstArrival: firstArrival,
+            frequencyMinutes: frequencyMinutes,
+            dateAdded: dateAdded
+        });
+    }
 });
 
 //limitedtolast(1).on("child_added")

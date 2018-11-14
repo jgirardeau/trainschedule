@@ -69,20 +69,27 @@
                             <div class="form-group">
                                 <label for="trainName">Train Name</label>
                                 <input type="text" class="form-control" id="trainName" placeholder="Train Name">
+                                <span id="trainNameError" class="errorHide">This field is required</span>
                             </div>
                             <div class="form-group">
                                 <label for="destination">Destination</label>
                                 <input type="text" class="form-control" id="destination" placeholder="Destination">
+                                <span id="destinationError" class="errorHide">This field is required</span>
                             </div>
                             <div class="form-group">
                                 <label for="firstArrival">First Train Time (HH:MM -- military time)</label>
                                 <input type="text" class="form-control" id="firstArrival" placeholder="12:10">
+                                <span id="firstArrivalError" class="errorHide">This field is required</span>
+                                <span id="firstArrivalTimeError" class="errorHide">Must be military time, example: 11:15 or 23:10</span>
                             </div>
                             <div class="form-group">
                                 <label for="frequencyMinutes">Frequency (min)</label>
                                 <input type="text" class="form-control" id="frequencyMinutes" placeholder="10">
+                                <span id="frequencyMinutesError" class="errorHide">This field is required</span>
+                                <span id="frequencyMinutesIntegerError" class="errorHide">Must be a positive number</span>
                             </div>
                             <button type="submit" id="submitButton" class="btn btn-primary">Submit</button>
+                            <button type="submit" id="testButton" class="btn btn-primary">Test</button>
                         </form>
                     </div>
                 </div>
