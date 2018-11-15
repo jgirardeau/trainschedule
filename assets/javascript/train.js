@@ -58,7 +58,7 @@ function addTableEntry(table, key) {
     addTableItem(tr, time_delta[0]);
     //addTableItem(tr, '<input type="button" value="Button" name="B3" onclick="alert();">');
     // tr.append('<input type="button" value="Button" name="B3" onclick="alert();">');
-    tr.append('<button type="button" class="btn btn-primary btn-sm" class = "centerButton" onclick=deleteTableRow("' + key + '")> Delete </button>');
+    tr.append('<button type="button" class="btn btn-primary btn-sm" class = "centerButton" onclick=deleteTableRow("' + key + '")> <i class="fa fa-trash"> </button>');
     tr.attr('id', key);
     tr.attr('firstArrival', table.firstArrival);
     tr.attr('frequencyMinutes', table.frequencyMinutes);
@@ -185,7 +185,7 @@ database.ref().orderByChild("dateAdded").on("child_added", function(snapshot) {
 });
 
 function updateTablesWithCurrentTime() {
-    console.log("update tables");
+    // console.log("update tables");
     var table = document.querySelector("#tableBody");
     for (let row of table.rows) {
         // console.log(row.cells[3]);
