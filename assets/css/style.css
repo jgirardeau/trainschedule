@@ -17,6 +17,10 @@
     margin-left: 10px;
 }
 
+#testButton {
+    margin-left: 70%;
+}
+
 
 /* body {
     background-image: url("../images/background.png");
