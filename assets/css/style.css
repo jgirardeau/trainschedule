@@ -21,6 +21,10 @@
     margin-left: 70%;
 }
 
+.centerButton {
+    align-items: center;
+}
+
 
 /* body {
     background-image: url("../images/background.png");

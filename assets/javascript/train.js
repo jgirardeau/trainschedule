@@ -22,7 +22,7 @@ function addTableItem(table, item) {
 }
 
 function get_time_delta(firstArrival, frequencyMinutes) {
-    console.log("First arrival ", firstArrival);
+    // console.log("First arrival ", firstArrival);
     var firstArrivalConverted = moment(firstArrival, "HH:mm").subtract(1, 'years');
     // console.log("first time converted " + firstArrivalConverted)
     // diffDuration = now.duration(a.diff(now));
@@ -38,6 +38,15 @@ function get_time_delta(firstArrival, frequencyMinutes) {
     return [tMinutesTillTrain, nextTrainArrivalTime];
 }
 
+function deleteTableRow(key, cellIndex) {
+    //   console.log(this);
+    //   console.log(key)
+    //console.log(trainNamesInTable);
+    database.ref().child(key).remove();
+    window.location.reload();
+    trainNamesInTable = []; // clear out current train names
+}
+
 function addTableEntry(table, key) {
     var time_delta = get_time_delta(table.firstArrival, table.frequencyMinutes);
     // console.log("p1 ", time_delta[0], " p2 ", time_delta[1])
@@ -47,6 +56,9 @@ function addTableEntry(table, key) {
     addTableItem(tr, table.frequencyMinutes);
     addTableItem(tr, time_delta[1]);
     addTableItem(tr, time_delta[0]);
+    //addTableItem(tr, '<input type="button" value="Button" name="B3" onclick="alert();">');
+    // tr.append('<input type="button" value="Button" name="B3" onclick="alert();">');
+    tr.append('<button type="button" class="btn btn-primary btn-sm" class = "centerButton" onclick=deleteTableRow("' + key + '")> Delete </button>');
     tr.attr('id', key);
     tr.attr('firstArrival', table.firstArrival);
     tr.attr('frequencyMinutes', table.frequencyMinutes);
@@ -118,6 +130,16 @@ $("#submitButton").click(function() {
     var errorInForm = false;
     var trainName = $("#trainName").val();
     if (!validText(trainName, $("#trainNameError"))) errorInForm = true;
+    // check for duplicate
+    if (!errorInForm) {
+        var found = trainNamesInTable.indexOf(trainName);
+        if (found >= 0) {
+            $("#trainNameErrorDuplicate").removeClass("errorHide").addClass("errorShow");
+            errorInForm = true;
+        } else {
+            $("#trainNameErrorDuplicate").removeClass("errorShow").addClass("errorHide");
+        }
+    }
     var destination = $("#destination").val();
     if (!validText(destination, $("#destinationError"))) errorInForm = true;
     var frequencyMinutes = $("#frequencyMinutes").val();
@@ -149,30 +171,44 @@ $("#submitButton").click(function() {
 //  database.ref().orderBychild("dateAdded").limitToLast(1).on("child_added", function(snapshot) {
 //   database.ref().on("child_added", function(snapshot) {
 database.ref().orderByChild("dateAdded").on("child_added", function(snapshot) {
-    console.log(snapshot)
+    // console.log(snapshot)
     var table = snapshot.val();
     var key = snapshot.key;
-    console.log(table);
-    console.log(table.trainName);
-    console.log(table.destination);
-    console.log(table.firstArrival);
-    console.log(table.frequencyMinutes);
+    // console.log(table);
+    // console.log(table.trainName);
+    // console.log(table.destination);
+    //console.log(table.firstArrival);
+    // console.log(table.frequencyMinutes);
     addTableEntry(table, key);
+    trainNamesInTable.push(table.trainName);
+    //   console.log(trainNamesInTable);
 });
 
-$("#testButton").click(function() {
-    event.preventDefault();
+function updateTablesWithCurrentTime() {
+    console.log("update tables");
     var table = document.querySelector("#tableBody");
     for (let row of table.rows) {
-        console.log(row.cells[3]);
-        console.log(row.cells[4]);
-        console.log(row.getAttribute('data'));
+        // console.log(row.cells[3]);
+        // console.log(row.cells[4]);
+        //console.log(row.getAttribute('data'));
         var firstArrival = row.getAttribute('firstArrival');
         var frequencyMinutes = row.getAttribute('frequencyMinutes');
         var time_delta = get_time_delta(firstArrival, frequencyMinutes);
-        console.log("p1 ", time_delta[0], " p2 ", time_delta[1])
+        // console.log("p1 ", time_delta[0], " p2 ", time_delta[1])
         row.cells[3].innerText = time_delta[1];
         row.cells[4].innerText = time_delta[0];
-
     }
+}
+$("#testButton").click(function() {
+    event.preventDefault();
+    updateTablesWithCurrentTime();
 });
+
+var trainNamesInTable = [];
+
+function startGameTimer() {
+    intervalId = setInterval(function() {
+        updateTablesWithCurrentTime();
+    }, 15000);
+}
+startGameTimer();
